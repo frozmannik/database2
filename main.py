@@ -115,7 +115,7 @@ def make_an_order(basket,orderID): #orderID could be replaced by some internal c
         print "Something went wrong: {}".format(err1)
 
 
-asdasdasdasdasdas
+
 
 basket = [1,2,3,100]
 
