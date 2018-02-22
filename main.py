@@ -82,34 +82,42 @@ def release_item(id):  # set item out of stock
 
 
 def make_an_order(basket,orderID): #orderID could be replaced by some internal counter( THEN we will use this counter as
-    price = 0
-    for item in basket:
-        sqlstmt = "SELECT `itemPrice` FROM `items` WHERE `itemID` = {} ".format(item)
-        cursor.execute(sqlstmt)
-        result = cursor.fetchall()
-        price = price +(result[0][0])
-    print "final price is {}".format(price)
-    print "current time is {}".format(datetime.datetime.now())
+    try:
+        price = 0
+        for item in basket:
+            sqlstmt = "SELECT `itemPrice` FROM `items` WHERE `itemID` = {} ".format(item)
+            cursor.execute(sqlstmt)
+            result = cursor.fetchall()
+            price = price +(result[0][0])
+        print "final price is {}".format(price)
+        print "current time is {}".format(datetime.datetime.now())
 
-    # create an order in `order` table
-    time = datetime.datetime.now()
-    sqlstmt = " INSERT INTO `test`.`orders` (`orderTime`, `orderPrice`) VALUES ('{}', '{}');".format(time,price)
-    cursor.execute(sqlstmt)
-    db.commit()
-
-    sqlstmt = "SELECT MAX(`orderID`) FROM `orders`;"
-    cursor.execute(sqlstmt)
-    result = cursor.fetchall()
-    print result[0][0]
-    # get a result[0][0] as order id and put it in `utility table` with itemID 
-
-    for item in basket:
-        sqlstmt ="INSERT INTO `test`.`utility_table` (`itemID`, `orderID`) VALUES ('{}', '{}');".format(item,result[0][0])
+        # create an order in `order` table
+        time = datetime.datetime.now()
+        sqlstmt = " INSERT INTO `test`.`orders` (`orderTime`, `orderPrice`) VALUES ('{}', '{}');".format(time,price)
         cursor.execute(sqlstmt)
         db.commit()
 
+        sqlstmt = "SELECT MAX(`orderID`) FROM `orders`;"
+        cursor.execute(sqlstmt)
+        result = cursor.fetchall()
+        print result[0][0]
+        # get a result[0][0] as order id and put it in `utility table` with itemID
 
-basket = [1,2,3,3]
+        for item in basket:
+            sqlstmt ="INSERT INTO `test`.`utility_table` (`itemID`, `orderID`) VALUES ('{}', '{}');".format(item,result[0][0])
+            cursor.execute(sqlstmt)
+            db.commit()
+
+    except mysql.connector.Error as err:
+        print "Something went wrong: {}".format(err)
+    except IndexError as err1:
+        print "Something went wrong: {}".format(err1)
+
+
+
+
+basket = [1,2,3,100]
 
 make_an_order(basket,21)
 
