@@ -81,7 +81,7 @@ def release_item(id):  # set item out of stock
         print "Can not release item"
 
 
-def make_an_order(basket,orderID):
+def make_an_order(basket,orderID): #orderID could be replaced by some internal counter( THEN we will use this counter as
     price = 0
     for item in basket:
         sqlstmt = "SELECT `itemPrice` FROM `items` WHERE `itemID` = {} ".format(item)
@@ -103,6 +103,10 @@ def make_an_order(basket,orderID):
     print result[0][0]
     # get a result[0][0] as order id and put it in `utility table` with itemID 
 
+    for item in basket:
+        sqlstmt ="INSERT INTO `test`.`utility_table` (`itemID`, `orderID`) VALUES ('{}', '{}');".format(item,result[0][0])
+        cursor.execute(sqlstmt)
+        db.commit()
 
 
 basket = [1,2,3,3]
