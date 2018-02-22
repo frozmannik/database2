@@ -113,6 +113,7 @@ def make_an_order(basket,orderID): #orderID could be replaced by some internal c
         print "Something went wrong: {}".format(err)
     except IndexError as err1:
         print "Something went wrong: {}".format(err1)
+        print "Item doesn't exist"
 
 
 
